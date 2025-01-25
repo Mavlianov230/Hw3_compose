@@ -13,17 +13,21 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun EpisodesScreen(navController: NavController) {
-    val viewModel: EpisodeViewModel = koinViewModel()
-    val episodes = viewModel.episodes.collectAsState().value
+    val episodeViewModel: EpisodeViewModel = koinViewModel()
+    val episodes = episodeViewModel.episodes.collectAsState().value
 
     LazyColumn {
-        items(episodes) { episode ->
-            Text(
-                text = episode.name,
-                modifier = Modifier.clickable {
-                    navController.navigate("episode_detail/${episode.id}")
-                }
-            )
+        if (episodes.isEmpty()) {
+            item { Text(text = "Загрузка...") }
+        } else {
+            items(episodes) { episode ->
+                Text(
+                    text = episode.name,
+                    modifier = Modifier.clickable {
+                        navController.navigate("episode_detail/${episode.id}")
+                    }
+                )
+            }
         }
     }
 }

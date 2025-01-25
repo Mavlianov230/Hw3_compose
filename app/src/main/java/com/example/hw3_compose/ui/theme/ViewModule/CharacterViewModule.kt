@@ -6,12 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.hw3_compose.ui.theme.data.dto.CharacterResponse
 import com.example.hw3_compose.ui.theme.data.dto.CharacterResultResponse
 import com.example.hw3_compose.ui.theme.data.repasitory.CharacterRepasitory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class CharacterViewModule(
-    private val characterRepasitory: CharacterRepasitory,
-) : ViewModel() {
+class CharacterViewModule(private val characterRepasitory: CharacterRepasitory) : ViewModel() {
 
     private val _characters = MutableStateFlow<List<CharacterResponse>>(emptyList())
     val characters = _characters
@@ -23,37 +22,32 @@ class CharacterViewModule(
         fetchAllCharacters()
     }
 
-    fun getCharacterDetails(id: Int) {
-        viewModelScope.launch {
-        try {
-            val response = characterRepasitory.getCharacterDetails(id)
-            if (response.isSuccessful && response.body() != null) {
-                _characterDetails.value = response.body()
-            } else {
-                Log.e(
-                    "ololo",
-                    "Ошибка: ${response.code()} - ${response.message()}"
-                )
-            }
-        }catch (e: Exception) {
-            Log.e("ololo", "Ошибка при загрузке данных: ${e.message}", e)
-        }
-        }
-    }
     fun fetchAllCharacters() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = characterRepasitory.fetchCharacters()
-                if (response.isSuccessful && response.body() != null) {
-                    _characters.value = response.body()!!.result
+                if (response.isSuccessful) {
+                    _characters.value = response.body()?.result ?: emptyList()
                 } else {
-                    Log.e(
-                        "ololo",
-                        "Ошибка: ${response.code()} - ${response.message()}"
-                    )
+                    Log.e("CharacterViewModel", "Ошибка: ${response.code()} - ${response.message()}")
                 }
             } catch (e: Exception) {
-                Log.e("ololo", "Ошибка при загрузке данных: ${e.message}", e)
+                Log.e("CharacterViewModel", "Ошибка при загрузке данных: ${e.message}", e)
+            }
+        }
+    }
+
+    fun getCharacterDetails(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = characterRepasitory.getCharacterDetails(id)
+                if (response.isSuccessful) {
+                    _characterDetails.value = response.body()
+                } else {
+                    Log.e("CharacterViewModel", "Ошибка: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("CharacterViewModel", "Ошибка при загрузке данных: ${e.message}", e)
             }
         }
     }

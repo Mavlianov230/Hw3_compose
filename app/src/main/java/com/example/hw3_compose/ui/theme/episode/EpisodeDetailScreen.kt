@@ -10,19 +10,21 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun EpisodeDetailScreen(episodeId: Int) {
-    val viewModel: EpisodeViewModel = koinViewModel()
+    val episodeViewModel: EpisodeViewModel = koinViewModel()
 
     LaunchedEffect(episodeId) {
-        viewModel.loadEpisodeDetails(episodeId)
+        episodeViewModel.loadEpisodeDetails(episodeId)
     }
 
-    val episode = viewModel.episodeDetails.collectAsState().value
+    val episode = episodeViewModel.episodeDetails.collectAsState().value
 
-    episode?.let {
+    if (episode == null) {
+        Text(text = "Загрузка...")
+    } else {
         Column {
-            Text(text = "Name: ${it.name}")
-            Text(text = "Air Date: ${it.airDate}")
-            Text(text = "Episode: ${it.episode}")
+            Text(text = "Name: ${episode.name}")
+            Text(text = "Air Date: ${episode.airDate}")
+            Text(text = "Episode: ${episode.episode}")
         }
-    } ?: Text(text = "Loading...")
+    }
 }

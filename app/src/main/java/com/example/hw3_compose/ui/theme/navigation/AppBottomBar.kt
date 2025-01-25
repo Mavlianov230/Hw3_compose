@@ -10,6 +10,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.example.hw3_compose.ui.theme.modul.Screen
 
 @Composable
 fun AppBottomBar(
@@ -61,5 +62,6 @@ fun AppBottomBar(
                 }
             }
         )
+
     }
 }

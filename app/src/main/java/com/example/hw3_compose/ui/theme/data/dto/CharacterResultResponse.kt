@@ -42,3 +42,32 @@ data class LocationResponse(
         val residents: List<String>
     )
 }
+
+data class EpisodeResponse(
+    @SerializedName("results")
+    val results: List<Episode>
+) {
+    data class Episode(
+        @SerializedName("id")
+        val id: Int,
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("air_date")
+        val airDate: String,
+        @SerializedName("episode")
+        val episode: String,
+        @SerializedName("characters")
+        val characters: List<String>
+    )
+}
+
+data class FavoriteCharacter(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("imageUrl")
+    val imageUrl: String
+)
+
+

@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,25 +22,27 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CharacterDetailScreen(characterId: Int, onBack: () -> Unit) {
-    val viewModel = koinViewModel<CharacterViewModule>()
-    viewModel.getCharacterDetails(characterId)
-    viewModel.characterDetails.collectAsState().value?.let { character ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    val characterViewModel: CharacterViewModule = koinViewModel()
+
+    LaunchedEffect(characterId) {
+        characterViewModel.getCharacterDetails(characterId)
+    }
+
+    val character = characterViewModel.characterDetails.collectAsState().value
+
+    if (character == null) {
+        Text(text = "Загрузка...")
+    } else {
+        Column {
             Image(
                 painter = rememberImagePainter(character.image),
                 contentDescription = null,
                 modifier = Modifier.size(200.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = character.name, style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Status: ${character.status}", style = MaterialTheme.typography.bodyMedium)
-            Button(onClick = { onBack() }) {
-                Text("Back")
+            Text(text = character.name)
+            Text(text = "Status: ${character.status}")
+            Button(onClick = onBack) {
+                Text(text = "Назад")
             }
         }
     }

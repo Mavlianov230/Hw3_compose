@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,27 +42,32 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
     }
 }
 
 dependencies {
+
+
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation( libs.androidx.room.ktx)
+
+
     implementation (libs.converter.gson)
     implementation (libs.gson)
 
     implementation (libs.kotlinx.serialization.json)
-    implementation (libs.gson)
 
     implementation (libs.okhttp3.okhttp)
     implementation (libs.okhttp3.logging.interceptor)
-
-
+    implementation (libs.kotlinx.coroutines.android)
 
     implementation(libs.retrofit)
     implementation (libs.koin.androidx.compose)
-    implementation(libs.koin.android)
-
+    implementation (libs.koin.android)
 
     implementation(libs.coil.compose)
     implementation (libs.ui)

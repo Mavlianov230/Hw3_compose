@@ -18,11 +18,13 @@ fun LocationDetailScreen(locationId: Int) {
 
     val location = viewModel.locationDetails.collectAsState().value
 
-    location?.let {
+    if (location == null) {
+        Text(text = "Загрузка...")
+    } else {
         Column {
-            Text(text = "Name: ${it.name}")
-            Text(text = "Type: ${it.type}")
-            Text(text = "Dimension: ${it.dimension}")
+            Text(text = "Name: ${location.name}")
+            Text(text = "Type: ${location.type}")
+            Text(text = "Dimension: ${location.dimension}")
         }
-    } ?: Text(text = "Loading...")
+    }
 }

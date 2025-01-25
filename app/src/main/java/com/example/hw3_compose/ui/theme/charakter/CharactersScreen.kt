@@ -25,30 +25,33 @@ import com.example.hw3_compose.ui.theme.modul.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CharactersScreen(
-    navController: NavController,
-    characterViewModule: CharacterViewModule = koinViewModel<CharacterViewModule>()
-) {
-    val characters = characterViewModule.characters.collectAsState().value
+fun CharactersScreen(navController: NavController) {
+    val characterViewModel: CharacterViewModule = koinViewModel()
+    val characters = characterViewModel.characters.collectAsState().value
+
     LazyColumn {
-        items(characters) { character ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .clickable {
-                        navController.navigate(Screen.CharacterDetail.createRoute(character.id))
+        if (characters.isEmpty()) {
+            item { Text(text = "Загрузка...") }
+        } else {
+            items(characters) { character ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clickable {
+                            navController.navigate("character_detail/${character.id}")
+                        }
+                ) {
+                    Image(
+                        painter = rememberImagePainter(character.image),
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Text(text = character.name)
+                        Text(text = character.status)
                     }
-            ) {
-                Image(
-                    painter = rememberImagePainter(character.image),
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Column {
-                    Text(text = character.name, style = MaterialTheme.typography.bodyMedium)
-                    Text(text = character.status, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

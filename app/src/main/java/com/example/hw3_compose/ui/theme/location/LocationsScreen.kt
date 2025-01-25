@@ -18,13 +18,17 @@ fun LocationsScreen(navController: NavController) {
     val locations = viewModel.locations.collectAsState().value
 
     LazyColumn {
-        items(locations) { location ->
-            Text(
-                text = location.name,
-                modifier = Modifier.clickable {
-                    navController.navigate("location_detail/${location.id}")
-                }
-            )
+        if (locations.isEmpty()) {
+            item { Text(text = "Загрузка...") }
+        } else {
+            items(locations) { location ->
+                Text(
+                    text = location.name,
+                    modifier = Modifier.clickable {
+                        navController.navigate("location_detail/${location.id}")
+                    }
+                )
+            }
         }
     }
 }

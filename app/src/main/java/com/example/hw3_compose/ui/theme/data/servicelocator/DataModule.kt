@@ -5,6 +5,7 @@ import com.example.hw3_compose.ui.theme.data.api.CharacterApiService
 import com.example.hw3_compose.ui.theme.data.api.EpisodeApiService
 import com.example.hw3_compose.ui.theme.data.api.LocationApiService
 import com.example.hw3_compose.ui.theme.data.repasitory.CharacterRepasitory
+import com.example.hw3_compose.ui.theme.data.repasitory.FavoriteCharacterRepository
 import com.example.hw3_compose.ui.theme.data.repository.EpisodeRepository
 import com.example.hw3_compose.ui.theme.data.repository.LocationRepository
 import okhttp3.OkHttpClient
@@ -25,6 +26,8 @@ val dataModule = module {
     single { get<Retrofit>().create(EpisodeApiService::class.java) }
 
     single { get<Retrofit>().create(LocationApiService::class.java) }
+
+    single { FavoriteCharacterRepository(get()) }
 
     single { CharacterRepasitory(get()) }
 

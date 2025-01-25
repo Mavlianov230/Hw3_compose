@@ -11,16 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.hw3_compose.ui.theme.Favorite.FavoriteCharacterDetailScreen
+import com.example.hw3_compose.ui.theme.Favorite.FavoritesScreen
 import com.example.hw3_compose.ui.theme.Hw3_composeTheme
+import com.example.hw3_compose.ui.theme.ViewModule.FavoriteCharacterViewModel
 import com.example.hw3_compose.ui.theme.charakter.CharacterDetailScreen
 import com.example.hw3_compose.ui.theme.charakter.CharactersScreen
 import com.example.hw3_compose.ui.theme.episode.EpisodeDetailScreen
 import com.example.hw3_compose.ui.theme.episode.EpisodesScreen
 import com.example.hw3_compose.ui.theme.modul.Screen
+import com.example.hw3_compose.ui.theme.modul.appModule
 import com.example.hw3_compose.ui.theme.navigation.AppBottomBar
 import com.example.hw3_compose.ui.theme.navigation.AppTopBar
 import com.example.hw3_compose.ui.theme.screens.LocationDetailScreen
 import com.example.hw3_compose.ui.theme.screens.LocationsScreen
+import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +49,15 @@ fun App() {
                 Screen.Characters.route -> AppTopBar("Characters", isDetailScreen = false)
                 Screen.Locations.route -> AppTopBar("Locations", isDetailScreen = false)
                 Screen.Episodes.route -> AppTopBar("Episodes", isDetailScreen = false)
+                Screen.Favorites.route -> AppTopBar("Favorites", isDetailScreen = false)
                 else -> AppTopBar("", isDetailScreen = true, onBack = { navController.popBackStack() })
             }
         },
         bottomBar = {
             if (navController.currentBackStackEntry?.destination?.route !in listOf(
                     Screen.CharacterDetail.route,
-                    "location_detail/{id}"
+                    "location_detail/{id}",
+                    "episode_detail/{id}"
                 )
             ) {
                 AppBottomBar(navController)
@@ -77,6 +84,11 @@ fun App() {
             composable("episode_detail/{id}") { backStackEntry ->
                 val episodeId = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
                 EpisodeDetailScreen(episodeId)
+            }
+            composable(Screen.Favorites.route) { FavoritesScreen(navController) }
+            composable("favorite_character_detail/{id}") { backStackEntry ->
+                val characterId = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+                FavoriteCharacterDetailScreen(characterId) { navController.popBackStack() }
             }
         }
     }
